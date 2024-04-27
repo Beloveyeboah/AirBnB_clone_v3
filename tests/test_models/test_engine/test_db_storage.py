@@ -90,6 +90,7 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self):
         """Test that get retrieves an item in db properly"""
+        self.assertIsNotNone(models.storage.get(Users, '1223')
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):

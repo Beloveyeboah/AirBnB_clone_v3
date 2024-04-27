@@ -72,6 +72,20 @@ class FileStorage:
     # airbnb 3
     def get(self, cls, id):
         """ this method retrives objects created"""
+        all_objs = self.all(cls)
+        return all_objs.get(f'{cls.__name__}.{id}', None)
+
+    def count(self, cls=None):
+        """count number of objs in the storage"""
+        if cls:
+            return lens(self.all(cls))
+        else:
+            return len(self.all())
+
+    """
+    # airbnb 3
+    def get(self, cls, id):
+        """"""
         if cls is not None:
             cls_name = cls.__name__ if isinstance(cls, type) else cls
             key = cls_name + '.' + id
@@ -79,10 +93,11 @@ class FileStorage:
         return None
 
     def count(self, cls=None):
-        """counts the total number of objects in the storage"""
+        """"""
         if cls is None:
             return len(self.__objects)
         else:
             cls_name = cls.__name__ if isinstance(cls, type) else cls
             return len([obj for key, obj in
                         self.__objects.items() if cls_name in key])
+    """"
