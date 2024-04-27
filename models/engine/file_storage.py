@@ -71,8 +71,9 @@ class FileStorage:
         self.reload()
 
     # airbnb 3
+    """
     def get(self, cls, id):
-        """this method retrives objects created"""
+        """"""
         if cls is not None:
             cls_name = cls.__name__ if isinstance(cls, type) else cls
             key = cls_name + '.' + id
@@ -80,10 +81,36 @@ class FileStorage:
         return None
 
     def count(self, cls=None):
-        """count number of objs in the storage"""
+        """"""
         if cls is None:
             return len(self.__objects)
         else:
             cls_name = cls.__name__ if isinstance(cls, type) else cls
             return len([obj for key, obj in
                         self.__objects.items() if cls_name in key])
+    """
+
+     def get(self, cls, id):
+        """this method retrives objects created"""
+        if cls not in classes.values():
+            return None
+
+        objs = models.storage.all(cls)
+        for value in objs.values():
+            if (value.id == id):
+                return value
+
+        return None
+
+    def count(self, cls=None):
+        """count number of objs in the storage"""
+        all_class = classes.values()
+
+        if not cls:
+            count = 0
+            for clas in all_class:
+                count += len(models.storage.all(clas).values())
+        else:
+            count = len(models.storage.all(cls).values())
+
+        return count
