@@ -78,7 +78,7 @@ class DBStorage:
     # airbnb 3
     def get(self, cls, id):
         """ retrive objects"""
-        if cls is not None and id is not None:
+        if cls is not None:
             return self.session.query(cls).get(id)
         return None
 

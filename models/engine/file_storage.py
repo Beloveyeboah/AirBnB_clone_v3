@@ -72,14 +72,14 @@ class FileStorage:
     # airbnb 3
     def get(self, cls, id):
         """ this method retrives objects created"""
-        if cls is not None and is is not None:
+        if cls is not None:
             cls_name = cls.__name__ if isinstance(cls, type) else cls
             key = cls_name + '.' + id
             return self.__objects.get(get)
         return None
 
     def count(self, cls=None):
-        """counts the total number of objr=ects in the storage"""
+        """counts the total number of objects in the storage"""
         if cls is None:
             return len(self.__objects)
         else:
