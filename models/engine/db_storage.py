@@ -77,17 +77,14 @@ class DBStorage:
 
     # airbnb 3
 
-
-
-    """
     def get(self, cls, id):
-        """ """
+        """ retrive objects"""
         if cls is not None:
             return self.session.query(cls).get(id)
         return None
 
     def count(self, cls=None):
-        """"""
+        """count number of objs in the storage"""
         if cls is None:
             return self.session.query(self.all(cls=None)).count()
         else:
@@ -117,4 +114,4 @@ class DBStorage:
             count = len(models.storage.all(cls).values())
 
         return count
-
+"""
