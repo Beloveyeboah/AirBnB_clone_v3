@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 """Flask web application"""
 
-from flask import Flask, Blueprint, make_response, jsonify
-from api.v1.views import app_views
 from models import storage
-from os import getenv
+from api.v1.views import app_views
+from os import environ
+from flask import Flask, render_template, make_response, jsonify
 from flask_cors import CORS
+from flasgger import Swagger
+from flasgger.utils import swag_from
 
 
 app = Flask(__name__)
