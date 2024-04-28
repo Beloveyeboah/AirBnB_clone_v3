@@ -22,10 +22,14 @@ def stats():
     """
     Returns the count of all objects by type
     """
-    my_dict = {"amenities": storage.count(Amenity),
-               "cities": storage.count(City),
-               "places": storage.count(Place),
-               "reviews": storage.count(Review),
-               "states": storage.count(State),
-               "users": storage.count(User)}
-    return jsonify(my_dict)
+     classes = [Amenity, City, Place, Review, State, User]
+     values =  names = ["amenities", "cities", "places", "reviews", "states", "users"]
+
+     new_list = {}
+     total_list = len(classes)
+
+     for objs in range(total_list):
+         new_list[values[objs]] = storage.count(classes[objs])
+
+         return jsonify(new_list)
+
