@@ -12,15 +12,14 @@ def status():
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats')
-def stats():
+@app_views.route('/stats', strict_slashes=False)
+def count():
     """
-    Returns the count of all objects by type
+    Retrieves the number of each objects by type
     """
-     my_dict = {"amenities": storage.count(Amenity),
-               "cities": storage.count(City),
-               "places": storage.count(Place),
-               "reviews": storage.count(Review),
-               "states": storage.count(State),
-               "users": storage.count(User)}
-    return jsonify(my_dict)
+    return jsonify({"amenities": storage.count("Amenity"),
+                    "cities": storage.count("City"),
+                    "places": storage.count("Place"),
+                    "reviews": storage.count("Review"),
+                    "states": storage.count("State"),
+                    "users": storage.count("User")})
