@@ -1,71 +1,94 @@
 #!/usr/bin/python3
-"""State module"""
+"""states route handler"""
 from api.v1.views import app_views
-from flask import jsonify, abort, request, make_response
+from flask import jsonify, abort, request
 from models import storage
 from models.state import State
-from flasgger.utils import swag_from
 
 
-@app_views.route('/states', methods=['GET'], strict_slashes=False)
-@swag_from('documentation/state/get.yml', methods=['GET'])
-def get_all():
-    """ get all by id """
-    all_list = [obj.to_dict() for obj in storage.all(State).values()]
-    return jsonify(all_list)
-
-
-@app_views.route('/states/<string:state_id>', methods=['GET'],
-                 strict_slashes=False)
-@swag_from('documentation/state/get_id.yml', methods=['GET'])
-def get_method_state(state_id):
-    """ get state by id"""
-    state = storage.get(State, state_id)
-    if state is None:
+def check(id):
+    """
+        checking if state is valid in storage
+    """
+    try:
+        checker = storage.get(State, id)
+        checker.to_dict()
+    except Exception:
         abort(404)
+    return checker
+
+
+def get_all(id_state):
+    """
+        getting all states from storage
+    """
+    if id_state is not None:
+        state = check(id_state)
+        dict_state = state.to_dict()
+        return jsonify(dict_state)
+    states = storage.all(State)
+    states_all = []
+    for x in states.values():
+        states_all.append(x.to_dict())
+    return jsonify(states_all)
+
+
+def delete_state(id_state):
+    """
+        deleting a state request
+    """
+    state = check(id_state)
+    storage.delete(state)
+    storage.save()
+    response = {}
+    return jsonify(response)
+
+
+def create_state(request):
+    """
+        Create new state request
+    """
+    request_json = request.get_json()
+    if request_json is None:
+        abort(400, 'Not a JSON')
+    try:
+        name_state = request_json['name']
+    except Exception:
+        abort(400, "Missing name")
+    state = State(name=name_state)
+    storage.new(state)
+    storage.save()
     return jsonify(state.to_dict())
 
 
-@app_views.route('/states/<string:state_id>', methods=['DELETE'],
-                 strict_slashes=False)
-@swag_from('documentation/state/delete.yml', methods=['DELETE'])
-def del_method(state_id):
-    """ delete state by id"""
-    state = storage.get(State, state_id)
-    if state is None:
-        abort(404)
-    state.delete()
-    storage.save()
-    return jsonify({})
+def update_state(state_id, request):
+    """
+        Update state if found
+    """
+    state = check(state_id)
+    request_json = request.get_json()
+    if request_json is None:
+        abort(400, 'Not a JSON')
+    for x, y in request_json.items():
+        if (x not in ('id', 'created_at', 'updated_at')):
+            setattr(state, x, y)
+        storage.save()
+        return jsonify(state.to_dict())
 
 
-@app_views.route('/states/', methods=['POST'],
-                 strict_slashes=False)
-@swag_from('documentation/state/post.yml', methods=['POST'])
-def create_obj():
-    """ create new instance """
-    if not request.get_json():
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
-    if 'name' not in request.get_json():
-        return make_response(jsonify({"error": "Missing name"}), 400)
-    js = request.get_json()
-    obj = State(**js)
-    obj.save()
-    return jsonify(obj.to_dict()), 201
-
-
-@app_views.route('/states/<string:state_id>', methods=['PUT'],
-                 strict_slashes=False)
-@swag_from('documentation/state/put.yml', methods=['PUT'])
-def post_method(state_id):
-    """ post method """
-    if not request.get_json():
-        return make_response(jsonify({"error": "Not a JSON"}), 400)
-    obj = storage.get(State, state_id)
-    if obj is None:
-        abort(404)
-    for key, value in request.get_json().items():
-        if key not in ['id', 'created_at', 'updated']:
-            setattr(obj, key, value)
-    storage.save()
-    return jsonify(obj.to_dict())
+@app_views.route('/states/', methods=['GET', 'POST'],
+                 defaults={'state_id': None}, strict_slashes=False)
+@app_views.route('/states/<state_id>',
+                 methods=['GET', 'DELETE', 'PUT'])
+def states(state_id):
+    """
+    Global Method to handle request
+    """
+    if (request.method == "GET"):
+        return get_all(state_id)
+    elif request.method == "DELETE":
+        return delete_state(state_id)
+    elif request.method == "POST":
+        return create_state(request), 201
+    elif request.method == 'PUT':
+        return update_state(state_id, request), 200
