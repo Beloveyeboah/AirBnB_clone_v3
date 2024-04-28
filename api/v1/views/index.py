@@ -3,7 +3,6 @@
 
 from api.v1.views import app_views
 from flask import jsonify
-import models
 from flask import Flask
 from models import storage
 
