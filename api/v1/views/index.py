@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+
 """JSON file status """
 from api.v1.views import app_views
 from flask import jsonify
@@ -10,20 +11,14 @@ def status():
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats')
+@app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def stats():
     """
     Returns the count of all objects by type
     """
-    classes = {
-        'amenities': 'Amenity',
-        'cities': 'City',
-        'places': 'Place',
-        'reviews': 'Review',
-        'states': 'State',
-        'users': 'User'
-    }
-    counts = {}
-    for key, value in classes.items():
-        counts[key] = storage.count(value)
-    return jsonify(counts)
+    return jsonify({"amenities": storage.count("Amenity"),
+                    "cities": storage.count("City"),
+                    "places": storage.count("Place"),
+                    "reviews": storage.count("Review"),
+                    "states": storage.count("State"),
+                    "users": storage.count("User")})
