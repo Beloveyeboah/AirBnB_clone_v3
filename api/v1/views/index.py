@@ -1,32 +1,30 @@
 #!/usr/bin/python3
+#!/usr/bin/python3
 """JSON file status """
-
-from models import storage
 from api.v1.views import app_views
 from flask import jsonify
-from models.amenity import Amenity
-from models.city import City
-from models.place import Place
-from models.review import Review
-from models.state import State
-from models.user import User
+from models import storage
 
-@app_views.route('/status',  methods=['GET'], strict_slashes=False)
+
+@app_views.route('/status', strict_slashes=False)
 def status():
-    """ returns a json"""
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats', strict_slashes=False)
+@app_views.route('/stats')
 def stats():
     """
-    return dict count of data
+    Returns the count of all objects by type
     """
-    return jsonify({"amenities": storage.count("Amenity"),
-                    "cities": storage.count("City"),
-                    "places": storage.count("Place"),
-                    "reviews": storage.count("Review"),
-                    "states": storage.count("State"),
-                    "users": storage.count("User")})
-
-
+    classes = {
+        'amenities': 'Amenity',
+        'cities': 'City',
+        'places': 'Place',
+        'reviews': 'Review',
+        'states': 'State',
+        'users': 'User'
+    }
+    counts = {}
+    for key, value in classes.items():
+        counts[key] = storage.count(value)
+    return jsonify(counts)
