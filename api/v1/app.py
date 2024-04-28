@@ -28,6 +28,16 @@ def not_found(error):
     return make_response(jsonify({"error": "Not found"}), 404)
 
 
+app.config['SWAGGER'] = {
+    'title': 'AirBnB clone - RESTful API',
+    'description': 'This is the api that\
+            was created for the hbnb restful api project,\
+    all the documentation will be shown below',
+    'uiversion': 3}
+
+Swagger(app)
+
+
 if __name__ == "__main__":
     host = getenv("HBNB_API_HOST", '0.0.0.0')
     port = getenv("HBNB_API_PORT", '5000')
