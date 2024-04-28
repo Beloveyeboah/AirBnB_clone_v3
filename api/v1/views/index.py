@@ -7,13 +7,14 @@ import models
 from flask import Flask
 from models import storage
 
+
 @app_views.route('/status', strict_slashes=False)
 def status():
     """ Status of API """
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats')
+@app_views.route('/stats',  strict_slashes=False)
 def stats():
     """
     Returns the count of all objects by type
