@@ -4,7 +4,7 @@
 from models import storage
 from models.state import State
 from api.v1.views import app_views
-from flask import jsonify, abort, request
+from flask import jsonify, abort, make_response, request
 from flasgger.utils import swag_from
 
 
@@ -21,7 +21,7 @@ def get_states():
                  strict_slashes=False)
 def get_state(state_id):
     """get state information for specified state"""
-    state = storage.get("State", state_id)
+    state = storage.get(State, state_id)
     if state is None:
         abort(404)
     return jsonify(state.to_dict())
@@ -31,12 +31,12 @@ def get_state(state_id):
                  strict_slashes=False)
 def delete_state(state_id):
     """deletes a state based on its state_id"""
-    state = storage.get("State", state_id)
+    state = storage.get(State, state_id)
     if state is None:
         abort(404)
-    state.delete()
+    storage.delete(state)
     storage.save()
-    return (jsonify({}))
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route('/states/', methods=['POST'], strict_slashes=False)
