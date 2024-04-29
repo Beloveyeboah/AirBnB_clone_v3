@@ -7,7 +7,7 @@ from flask import jsonify
 from models import storage
 
 
-@app_views.route('/status/')
+@app_views.route('/status/', strict_slashes=False)
 def status():
     """Example endpoint returns status
     returns the current status of the API
@@ -31,7 +31,7 @@ def status():
     return jsonify({"status": "OK"})
 
 
-@app_views.route('/stats/')
+@app_views.route('/stats/', strict_slashes=False)
 def stats():
     """Example endpoint returns stats
     returns a number of objects of each class
