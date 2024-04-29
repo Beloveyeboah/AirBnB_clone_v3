@@ -1,10 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/python3 
 """
 This is module states
 """
-from api.v1.views import (app_views, State, storage)
-from flask import (abort, jsonify, make_response, request)
-
+from models import storage
+from models.state import State
+from api.v1.views import app_views
+from flask import jsonify, abort, request
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
 def view_all_states():
@@ -133,7 +134,6 @@ def delete_state(state_id=None):
         abort(404)
     storage.delete(state)
     return jsonify({}), 200
-
 
 @app_views.route('/states', methods=['POST'], strict_slashes=False)
 def create_state():

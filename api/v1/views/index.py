@@ -5,7 +5,6 @@ Index model holds the endpoint (route)
 from api.v1.views import app_views, storage
 from flask import jsonify
 
-
 @app_views.route('/status/')
 def status():
     """Example endpoint returns status

@@ -76,15 +76,27 @@ class DBStorage:
         self.__session.remove()
 
     # airbnb 3
+
     def get(self, cls, id):
         """ retrive objects"""
-        if cls is not None and id is not None:
-            return self.session.query(cls).get(id)
+        if cls not in classes.values():
+            return None
+        objs = models.storage.all(cls)
+        for value in objs.values():
+            if (value.id == id):
+                return value
+
         return None
 
     def count(self, cls=None):
         """count number of objs in the storage"""
-        if cls is None:
-            return self.session.query(self.all(cls=None)).count()
+        all_class = classes.values()
+
+        if not cls:
+            count = 0
+            for clas in all_class:
+                count += len(models.storage.all(clas).values())
         else:
-            return self.session.query(cls).count()
+            count = len(models.storage.all(cls).values())
+
+        return count
