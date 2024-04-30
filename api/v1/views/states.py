@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """Flask application for State class/entity"""
 from api.v1.views import app_views
+from flask import abort, jsonify, abort, request
 from models import storage
 from models.state import State
-from flask import jsonify, abort, request
 
 
 @app_views.route("/states", methods=["GET"], strict_slashes=False)
@@ -34,7 +34,7 @@ def delete_state(state_id):
         abort(404)
     storage.delete(state)
     storage.save()
-    return make_response(jsonify({}), 200) # changes here
+    return jsonify({}), 200
 
 
 @app_views.route("/states", methods=["POST"], strict_slashes=False)
@@ -47,7 +47,7 @@ def create_state():
         abort(400, "Missing name")
     new_state = State(**state_data)
     new_state.save()
-    return make_response(jsonify(new_state.to_dict()), 201) # here
+    return sonify(new_state.to_dict()), 201
 
 
 @app_views.route("/states/<state_id>", methods=["PUT"], strict_slashes=False)
@@ -64,4 +64,4 @@ def update_state(state_id):
         if key not in ["id", "created_at", "updated_at"]:
             setattr(state, key, value)
     storage.save()
-    return make_response(jsonify(state.to_dict()), 200) # here
+    return jsonify(state.to_dict()), 200
