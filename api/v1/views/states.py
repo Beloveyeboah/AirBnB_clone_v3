@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""State module"""
+"""api for State module"""
 from api.v1.views import app_views
 from flask import jsonify, abort, request, make_response
 from models import storage
@@ -10,16 +10,19 @@ from flasgger.utils import swag_from
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
 @swag_from('documentation/state/get.yml', methods=['GET'])
 def get_all():
-    """ get all by id """
-    all_list = [obj.to_dict() for obj in storage.all(State).values()]
-    return jsonify(all_list)
+    """ retrive  all by ids in states """
+    all_states = storage.all(State).values()
+    list_states = []
+    for state in all_states:
+        list_states.append(state.to_dict())
+    return jsonify(list_states)
 
 
 @app_views.route('/states/<string:state_id>', methods=['GET'],
                  strict_slashes=False)
 @swag_from('documentation/state/get_id.yml', methods=['GET'])
 def get_method_state(state_id):
-    """ get state by id"""
+    """ get state just its by id"""
     state = storage.get(State, state_id)
     if state is None:
         abort(404)
@@ -32,11 +35,14 @@ def get_method_state(state_id):
 def del_method(state_id):
     """ delete state by id"""
     state = storage.get(State, state_id)
-    if state is None:
+
+    if not state:
         abort(404)
-    state.delete()
+
+    storage.delete(state)
     storage.save()
-    return jsonify({})
+
+    return make_response(jsonify({}), 200)
 
 
 @app_views.route('/states/', methods=['POST'],
